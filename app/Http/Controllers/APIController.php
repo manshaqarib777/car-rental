@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Condtion;
 use App\Models\FuelType;
 use App\Models\TransmissionType;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Auth;
 class APIController extends Controller
@@ -107,5 +108,12 @@ class APIController extends Controller
 
         $cars=Car::where('user_id', Auth::user()->id)->orderBy('id','desc')->get();
         return $cars;
+    }
+    public function get_cars_across_category()
+    {
+        $categories = Category::with(['cars' => function ($query) {
+            $query->with('category')->with('brand')->with('brand_model')->with('body_type')->with('fuel_type')->with('transmission_type')->with('condtion')->get();
+        }])->get();
+        return $categories;
     }
 }
